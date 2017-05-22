@@ -1,0 +1,29 @@
+body {
+  margin: 20px auto;
+  position: relative;
+  background-color: cadetBlue;
+}
+
+table{
+  postion: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  margin: auto;
+}
+
+th, th a{
+    background-color: darkcyan;
+    color: white;
+}
+
+
+
+td{
+  background-color: aliceblue;
+}
+
+a{
+  color: black;
+}

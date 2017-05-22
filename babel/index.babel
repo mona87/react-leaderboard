@@ -1,0 +1,79 @@
+class App extends React.Component {
+  constructor() {
+    super();
+    this.state = {
+      data: [],
+      currentApi: ''
+    };
+  }
+  getData(props) {
+    // get data from api
+    fetch(props.api)
+      .then(response => {
+        return response.json();
+      })
+      .then(json => {
+        this.setState({ data: json, currentApi: props.title });
+      });
+  }
+  componentDidMount() {
+    //load initial data
+    this.getData(this.props.apiAllTime);
+  }
+  render() {
+ 
+    return (
+      <div>
+        <table
+          style={{
+            border: "2px solid #000",
+            width: "800px",
+            borderSpacing: "0"
+          }}
+        >
+          <caption style={{color: 'white', fontSize:'30px', marginBottom:'20px'}}>LeaderBoard</caption>
+          <tr>
+            <th style={{ textAlign: "center" }}>#</th>
+            <th style={{ textAlign: "center" }}>Camper Name</th>
+            {/* toggle scores based on api*/}
+            <th  style={{ textAlign: "center" }}><a href="#" onClick={() => this.getData(this.props.apiRecent)}>Points in past 30 days</a></th>
+            <th  style={{ textAlign: "center"}}><a href="#" onClick={() => this.getData(this.props.apiAllTime)} >All time points</a></th>
+          </tr>
+
+          {this.state.data ? this.state.data.sort((a, b) => {
+            //sort rankings
+            if (this.state.currentApi === 'recent'){
+              return a.recent > b.recent ? -1 : 1 ;
+            } else {
+                return a.alltime > b.alltime ? -1 : 1 ;
+            }
+            }).map((points, index) => {
+                return (
+                    <tr>
+                    <td style={{ textAlign: "left", border: "2px solid black" }}>{index+=1}</td>
+                    <td style={{ textAlign: "left", border: "2px solid black" }} >
+                    <a href={'https://www.freecodecamp.com/' + points.username} >
+                        <div> <img  width= "25" height="25" src={points.img}/></div>{points.username}</a>
+                    </td>
+                    <td style={{ textAlign: "center", border: "2px solid black" }}>
+                      {points.recent}
+                    </td>
+                    <td style={{ textAlign: "center", border: "2px solid black" }}>
+                      {points.alltime}
+                    </td>
+                    </tr>
+                );
+              })
+            : false}
+        </table>
+      </div>
+    );
+  }
+}
+
+const apiRecent = "https://fcctop100.herokuapp.com/api/fccusers/top/recent";
+const apiAllTime= "https://fcctop100.herokuapp.com/api/fccusers/top/alltime";
+ReactDOM.render(<App 
+                  apiRecent ={{api: apiRecent, title: 'recent'} }
+                  apiAllTime = {{api: apiAllTime, title: 'allTime'}}
+                 />, document.querySelector("#app"));
